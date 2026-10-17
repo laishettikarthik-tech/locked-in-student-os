@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Screen time — Locked In{% endblock %}
+{% block content %}
+<section class="page-head compact-head"><div class="eyebrow">AWARENESS, NOT GUILT</div><h1>Screen-time tracker<span class="lime-period">.</span></h1><p class="hero-copy">Log time spent in entertainment and social apps, then compare it with study time.</p></section>
+<div class="stats-grid">
+  <div class="stat-card stat-purple"><span class="eyebrow">FOCUSED TODAY</span><strong>{{ today_focus // 60 }}h {{ today_focus % 60 }}m</strong><p>From saved focus sessions</p></div>
+  <div class="stat-card stat-orange"><span class="eyebrow">SCREEN TIME LOGGED</span><strong>{{ today_total // 60 }}h {{ today_total % 60 }}m</strong><p>Manual app entries today</p></div>
+  <div class="stat-card stat-dark"><span class="eyebrow">BALANCE</span><strong>{{ 'Study ahead' if today_focus >= today_total else 'Room to rebalance' }}</strong><p>Compare your own logged minutes</p></div>
+</div>
+<div class="two-column screen-columns">
+  <section class="panel"><div class="eyebrow">ADD APP USAGE</div><h2>Log screen time<span class="lime-period">.</span></h2><form method="post" class="stack-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>APP NAME<input name="app_name" required maxlength="80" placeholder="Instagram, Snapchat, YouTube..."></label>
+    <label>MINUTES TODAY<input type="number" name="minutes" required min="1" max="1440" placeholder="45"></label>
+    <button class="btn btn-purple btn-wide">Save entry ↗</button>
+  </form><p class="muted small">This first version uses manual entries. A website cannot automatically read all app usage on your phone or Mac; device-level integrations need separate permissions and support.</p></section>
+  <section><div class="eyebrow">RECENT ENTRIES</div><h2>Usage history<span class="lime-period">.</span></h2><div class="simple-list">{% for log in logs %}<div class="simple-row"><div class="grow"><strong>{{ log.app_name }}</strong><p>{{ log.log_date.strftime('%d %b %Y') }}</p></div><strong>{{ log.minutes }} min</strong></div>{% else %}<div class="empty-panel"><p>No screen-time entries yet.</p></div>{% endfor %}</div></section>
+</div>
+{% endblock %}

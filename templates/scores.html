@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Quiz & scores — Locked In{% endblock %}
+{% block content %}
+<section class="page-head compact-head"><div class="eyebrow">MEASURE WHAT YOU LEARN</div><h1>Quiz & scores<span class="lime-period">.</span></h1><p class="hero-copy">Record practice quiz marks, mock tests, and revision results to see your progress.</p></section>
+<div class="stats-grid">
+  <div class="stat-card stat-purple"><span class="eyebrow">TOTAL MARKS EARNED</span><strong>{{ total_scored }}<small>/{{ total_marks }}</small></strong><p>Across saved results</p></div>
+  <div class="stat-card stat-lime"><span class="eyebrow">OVERALL SCORE</span><strong>{{ percentage }}%</strong><p>Weighted by total marks</p></div>
+  <div class="stat-card stat-dark"><span class="eyebrow">ATTEMPTS</span><strong>{{ results|length }}</strong><p>Saved quizzes and tests</p></div>
+</div>
+<div class="two-column">
+  <section class="panel"><div class="eyebrow">RECORD A RESULT</div><h2>Add score<span class="lime-period">.</span></h2><form method="post" class="stack-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>QUIZ / TEST NAME<input name="title" required maxlength="180" placeholder="Python lists practice"></label>
+    <label>SUBJECT<input name="subject" maxlength="100" placeholder="CSE, Maths, Robotics"></label>
+    <div class="form-row"><label>MARKS EARNED<input type="number" name="score" min="0" required></label><label>TOTAL MARKS<input type="number" name="total" min="1" required></label></div>
+    <button class="btn btn-purple btn-wide">Save score ↗</button>
+  </form></section>
+  <section><div class="eyebrow">YOUR HISTORY</div><h2>Recent results<span class="lime-period">.</span></h2><div class="simple-list">{% for result in results %}<div class="result-row"><div class="grow"><strong>{{ result.title }}</strong><p>{{ result.subject or 'General' }} · {{ result.result_date.strftime('%d %b %Y') }}</p></div><div class="result-mark"><strong>{{ result.score }}/{{ result.total }}</strong><span>{{ (result.score / result.total * 100)|round(1) }}%</span></div></div>{% else %}<div class="empty-panel"><p>No scores saved yet.</p></div>{% endfor %}</div></section>
+</div>
+{% endblock %}

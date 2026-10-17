@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Tasks board — Locked In{% endblock %}
+{% block content %}
+<section class="page-head compact-head">
+  <div class="eyebrow">PLAN YOUR WORK</div><h1>Task board<span class="lime-period">.</span></h1>
+  <p class="hero-copy">Assignments, exams, projects, and internship work — all in one place.</p>
+</section>
+<div class="task-layout">
+  <section class="panel task-form-panel">
+    <div class="panel-heading"><div><div class="eyebrow">NEW TASK</div><h2>Add a task<span class="lime-period">.</span></h2></div><span class="plus-mark">＋</span></div>
+    <form method="post" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>TASK NAME<input name="title" required maxlength="180" placeholder="e.g. Finish Python assignment"></label>
+      <div class="form-row">
+        <label>SUBJECT / PROJECT<input name="subject" maxlength="100" placeholder="Python, Maths, Robotics"></label>
+        <label>CATEGORY<select name="category"><option>College</option><option>Exam</option><option>Internship</option><option>Personal</option><option>Project</option><option>Other</option></select></label>
+      </div>
+      <div class="form-row">
+        <label>PRIORITY<select name="priority"><option>Low</option><option selected>Medium</option><option>High</option><option>Urgent</option></select></label>
+        <label>DEADLINE<input type="date" name="deadline" min="{{ today.isoformat() }}"></label>
+      </div>
+      <label>ESTIMATED TIME (MINUTES)<input type="number" name="estimated_minutes" min="1" max="10080" value="30"></label>
+      <label>DESCRIPTION / CHECKLIST<textarea name="description" rows="3" placeholder="What needs to get done?"></textarea></label>
+      <button class="btn btn-purple btn-wide" type="submit">＋ Add task</button>
+    </form>
+  </section>
+  <section class="board-section">
+    <div class="board-toolbar">
+      <div><div class="eyebrow">YOUR WORKSPACE</div><h2>Tasks & assignments<span class="lime-period">.</span></h2></div>
+      <div class="view-switch"><a class="{% if view != 'list' %}selected{% endif %}" href="{{ url_for('tasks', view='kanban') }}">▦ Board</a><a class="{% if view == 'list' %}selected{% endif %}" href="{{ url_for('tasks', view='list') }}">☷ List</a></div>
+    </div>
+    {% if view == 'list' %}
+      <div class="table-wrap"><table><thead><tr><th>Task</th><th>Category</th><th>Priority</th><th>Deadline</th><th>Status</th><th>Update</th></tr></thead><tbody>
+      {% for task in tasks %}
+        <tr><td><strong>{{ task.title }}</strong><small>{{ task.subject or 'No subject' }}</small></td><td>{{ task.category }}</td><td><span class="priority priority-{{ task.priority|lower }}">{{ task.priority }}</span></td><td>{% if task.deadline %}<span class="{% if task.deadline < today and task.status != 'Completed' %}overdue-text{% endif %}">{{ task.deadline.strftime('%d %b %Y') }}</span>{% else %}—{% endif %}</td><td><span class="status-pill status-{{ task.status|lower|replace(' ', '-') }}">{{ task.status }}</span></td><td><form method="post" action="{{ url_for('update_task_status', task_id=task.id) }}" class="inline-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><select name="status" aria-label="Task status">{% for status in ['To Do','In Progress','Completed','Incomplete'] %}<option {% if task.status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select><button class="btn btn-ghost btn-small">Save</button></form></td></tr>
+      {% else %}<tr><td colspan="6" class="table-empty">No tasks yet. Add your first task.</td></tr>{% endfor %}
+      </tbody></table></div>
+    {% else %}
+      <div class="kanban-board">
+      {% for status in ['To Do','In Progress','Completed','Incomplete'] %}
+        <div class="kanban-column">
+          <div class="column-head"><span class="column-dot dot-{{ status|lower|replace(' ', '-') }}"></span><strong>{{ status }}</strong><span class="count">{{ tasks|selectattr('status','equalto',status)|list|length }}</span></div>
+          <div class="column-cards">
+          {% for task in tasks if task.status == status %}
+            <article class="task-card">
+              <div class="card-tags"><span class="category-tag">{{ task.category }}</span><span class="priority priority-{{ task.priority|lower }}">{{ task.priority }}</span></div>
+              <h3>{{ task.title }}</h3>
+              <p class="task-subject">{{ task.subject or 'General' }}</p>
+              {% if task.description %}<p class="task-description">{{ task.description }}</p>{% endif %}
+              <div class="task-meta"><span>◷ {{ task.estimated_minutes }} min</span><span class="{% if task.deadline and task.deadline < today and task.status != 'Completed' %}overdue-text{% endif %}">{% if task.deadline %}{{ task.deadline.strftime('%d %b') }}{% else %}No deadline{% endif %}</span></div>
+              <form method="post" action="{{ url_for('update_task_status', task_id=task.id) }}" class="status-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <select name="status" aria-label="Move task">{% for option in ['To Do','In Progress','Completed','Incomplete'] %}<option {% if task.status == option %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>
+                <button class="icon-btn" title="Save status" aria-label="Save status">↗</button>
+              </form>
+              <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}" class="delete-form" data-confirm="Delete this task?"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-button" type="submit">Delete task</button></form>
+            </article>
+          {% else %}
+            <div class="column-empty">Nothing here yet.</div>
+          {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

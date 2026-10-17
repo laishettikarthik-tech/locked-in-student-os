@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Notes hub — Locked In{% endblock %}
+{% block content %}
+<section class="page-head compact-head"><div class="eyebrow">YOUR KNOWLEDGE BASE</div><h1>Engineering notes<span class="lime-period">.</span></h1><p class="hero-copy">Keep CSE, mechanical, electrical, robotics, and AI knowledge in one searchable place.</p></section>
+<div class="two-column">
+  <section class="panel"><div class="eyebrow">CAPTURE AN IDEA</div><h2>New note<span class="lime-period">.</span></h2>
+    <form method="post" enctype="multipart/form-data" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>NOTE TITLE<input name="title" required maxlength="180" placeholder="e.g. Python OOP — inheritance"></label>
+      <label>SUBJECT<select name="subject">{% for subject in ['CSE','Mechanical','Electrical','Robotics','AI & ML','Mathematics','Other'] %}<option>{{ subject }}</option>{% endfor %}</select></label>
+      <label>YOUR NOTES<textarea name="content" rows="8" placeholder="Write concepts, examples, formulas, or revision points..."></textarea></label>
+      <label>EDUCATIONAL IMAGE (OPTIONAL)<input type="file" name="image" accept=".png,.jpg,.jpeg,.webp,.gif"></label>
+      <button class="btn btn-purple btn-wide">Save note ↗</button>
+    </form>
+  </section>
+  <section><div class="section-heading"><div><div class="eyebrow">YOUR COLLECTION</div><h2>Saved notes<span class="lime-period">.</span></h2></div><span class="count">{{ notes|length }}</span></div>
+    <div class="notes-grid">{% for note in notes %}
+      <article class="note-card"><div class="card-tags"><span class="category-tag">{{ note.subject }}</span><span class="muted small">{{ note.created_at.strftime('%d %b %Y') }}</span></div><h3>{{ note.title }}</h3>{% if note.content %}<p class="note-content">{{ note.content }}</p>{% endif %}{% if note.image_filename %}<img class="note-image" src="{{ url_for('note_image', note_id=note.id) }}" alt="Educational image for {{ note.title }}">{% endif %}<form method="post" action="{{ url_for('delete_note', note_id=note.id) }}" class="delete-form" data-confirm="Delete this note?"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-button">Delete note</button></form></article>
+    {% else %}<div class="empty-panel"><div class="empty-icon">✎</div><h3>No notes yet</h3><p>Save your first concept or revision note.</p></div>{% endfor %}</div>
+  </section>
+</div>
+{% endblock %}

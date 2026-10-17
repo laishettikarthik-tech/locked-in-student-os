@@ -1,0 +1,8 @@
+__pycache__/
+.venv/
+.env
+instance/
+uploads/*
+!uploads/.gitkeep
+*.pyc
+student_os.db

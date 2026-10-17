@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Focus — Locked In{% endblock %}
+{% block content %}
+<section class="page-head compact-head"><div class="eyebrow">PROTECT YOUR ATTENTION</div><h1>Focus room<span class="lime-period">.</span></h1><p class="hero-copy">Run a focus session, then save the time you actually studied.</p></section>
+<div class="focus-layout">
+  <section class="panel timer-panel">
+    <div class="eyebrow">FOCUS TIMER</div><div id="timer-display" class="timer-display">25:00</div>
+    <div class="timer-presets"><button class="preset active" data-minutes="25">25 min</button><button class="preset" data-minutes="45">45 min</button><button class="preset" data-minutes="60">60 min</button></div>
+    <div class="timer-controls"><button class="btn btn-lime" id="timer-start">Start</button><button class="btn btn-ghost" id="timer-reset">Reset</button></div>
+    <p class="muted small">The timer runs in this browser tab. When finished, record the real focused minutes below.</p>
+  </section>
+  <section class="panel"><div class="eyebrow">YOUR PROGRESS</div><h2>Study time<span class="lime-period">.</span></h2>
+    <div class="score-strip"><div><strong>{{ today_total // 60 }}h {{ today_total % 60 }}m</strong><span>Today</span></div><div><strong>{{ total // 60 }}h {{ total % 60 }}m</strong><span>All time</span></div></div>
+    <form method="post" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>SUBJECT / ACTIVITY<input name="subject" maxlength="100" placeholder="Python, Maths, Robotics" value="Study"></label>
+      <label>FOCUSED MINUTES<input type="number" name="minutes" min="1" max="1440" required placeholder="25"></label>
+      <button class="btn btn-purple btn-wide">Save focus session ↗</button>
+    </form>
+  </section>
+</div>
+<section class="section-block"><div class="section-heading"><div><div class="eyebrow">RECENT SESSIONS</div><h2>Focus history<span class="lime-period">.</span></h2></div></div>
+<div class="simple-list">{% for session in sessions %}<div class="simple-row"><div class="grow"><strong>{{ session.subject }}</strong><p>{{ session.session_date.strftime('%d %b %Y') }}</p></div><strong>{{ session.minutes }} min</strong></div>{% else %}<div class="empty-panel"><p>No sessions saved yet.</p></div>{% endfor %}</div></section>
+{% endblock %}

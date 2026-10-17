@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Papers & links — Locked In{% endblock %}
+{% block content %}
+<section class="page-head compact-head"><div class="eyebrow">YOUR STUDENT LIBRARY</div><h1>Papers & links<span class="lime-period">.</span></h1><p class="hero-copy">Question papers, PDFs, images, useful websites, and personal bookmarks.</p></section>
+<div class="two-column">
+  <section class="panel">
+    <div class="eyebrow">SAVE A RESOURCE</div><h2>Add to library<span class="lime-period">.</span></h2>
+    <form method="post" enctype="multipart/form-data" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>RESOURCE TITLE<input name="title" required maxlength="180" placeholder="e.g. Engineering Maths Midsem"></label>
+      <div class="form-row"><label>TYPE<select name="kind">{% for kind in ['Question paper','Midsem paper','Semester paper','External paper','Assignment','Internship','Useful link','Personal link','Image','Other'] %}<option>{{ kind }}</option>{% endfor %}</select></label><label>SUBJECT<input name="subject" maxlength="100" placeholder="Maths, Python, Robotics"></label></div>
+      <label>WEBSITE URL (OPTIONAL)<input type="url" name="url" placeholder="https://example.com"></label>
+      <label>UPLOAD FILE (MAX 20 MB)<input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.txt,.md,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv"></label>
+      <label>DESCRIPTION<textarea name="description" rows="3" placeholder="Semester, unit, topic, or why this is useful"></textarea></label>
+      <button class="btn btn-purple btn-wide">Save resource ↗</button>
+    </form>
+    <p class="muted small">Allowed file types include PDF, common images, text, Word, PowerPoint, Excel, and CSV.</p>
+  </section>
+  <section class="resource-list">
+    <div class="section-heading"><div><div class="eyebrow">SAVED BY YOU</div><h2>Your resources<span class="lime-period">.</span></h2></div><span class="count">{{ resources|length }}</span></div>
+    {% for resource in resources %}
+      <article class="resource-card">
+        <div class="resource-icon">{% if resource.kind in ['Question paper','Midsem paper','Semester paper','External paper'] %}▤{% elif resource.kind in ['Useful link','Personal link'] %}↗{% elif resource.kind == 'Image' %}▧{% else %}▣{% endif %}</div>
+        <div class="resource-body"><div class="card-tags"><span class="category-tag">{{ resource.kind }}</span>{% if resource.subject %}<span class="category-tag">{{ resource.subject }}</span>{% endif %}</div><h3>{{ resource.title }}</h3>{% if resource.description %}<p>{{ resource.description }}</p>{% endif %}
+          <div class="resource-actions">{% if resource.url %}<a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer">Open link ↗</a>{% endif %}{% if resource.stored_filename %}<a href="{{ url_for('download_resource', resource_id=resource.id) }}">Download {{ resource.original_filename }} ↓</a>{% endif %}</div>
+          <form method="post" action="{{ url_for('delete_resource', resource_id=resource.id) }}" class="delete-form" data-confirm="Delete this resource and its uploaded file?"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-button">Delete</button></form>
+        </div>
+      </article>
+    {% else %}<div class="empty-panel"><div class="empty-icon">▤</div><h3>Your library is ready</h3><p>Add your first question paper, link, or file.</p></div>{% endfor %}
+  </section>
+</div>
+{% endblock %}

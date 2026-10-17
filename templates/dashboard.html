@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Home — Locked In{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="eyebrow">YOUR DAILY MISSION</div>
+  <h1>yo, <span class="highlight">{{ current_user.username }}.</span></h1>
+  <p class="hero-copy">Start a session. Make a plan. Get it done.</p>
+</section>
+<div class="stats-grid">
+  <div class="stat-card stat-purple"><span class="eyebrow">TASKS COMPLETED</span><strong>{{ completed }}<small>/{{ total }}</small></strong><p>{{ completion_pct }}% completion rate</p></div>
+  <div class="stat-card stat-lime"><span class="eyebrow">ACTIVE TASKS</span><strong>{{ active }}</strong><p>To Do + In Progress</p></div>
+  <div class="stat-card stat-dark"><span class="eyebrow">OVERDUE</span><strong>{{ overdue }}</strong><p>Unfinished past deadline</p></div>
+</div>
+<div class="stats-grid stats-grid-lower">
+  <div class="stat-card stat-dark"><span class="eyebrow">FOCUSED TODAY</span><strong>{{ (focus_minutes // 60) }}h {{ focus_minutes % 60 }}m</strong><p>Record sessions in Focus</p></div>
+  <div class="stat-card stat-orange"><span class="eyebrow">SCREEN TIME LOGGED</span><strong>{{ (screen_minutes // 60) }}h {{ screen_minutes % 60 }}m</strong><p>Manual entries for today</p></div>
+  <div class="stat-card stat-dark"><span class="eyebrow">YOUR NEXT STEP</span><strong class="stat-word">Keep going.</strong><p>Small progress adds up.</p></div>
+</div>
+<div class="section-heading"><div><div class="eyebrow">UP NEXT</div><h2>Upcoming deadlines<span class="lime-period">.</span></h2></div><a class="btn btn-ghost btn-small" href="{{ url_for('tasks') }}">Open task board ↗</a></div>
+{% if upcoming %}
+  <div class="upcoming-list">
+  {% for task in upcoming %}
+    <div class="upcoming-row"><div class="task-dot"></div><div class="grow"><strong>{{ task.title }}</strong><p>{{ task.category }}{% if task.subject %} · {{ task.subject }}{% endif %}</p></div><span class="deadline-chip">{{ task.deadline.strftime('%d %b %Y') }}</span></div>
+  {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-panel"><div class="empty-icon">✓</div><h3>No upcoming deadlines</h3><p>Add tasks with due dates and they will appear here.</p><a class="btn btn-purple" href="{{ url_for('tasks') }}">Plan your work ↗</a></div>
+{% endif %}
+<div class="quick-links">
+  <a class="quick-card" href="{{ url_for('library') }}"><span>▤</span><strong>Open student library</strong><small>Papers, links & files ↗</small></a>
+  <a class="quick-card" href="{{ url_for('notes') }}"><span>✎</span><strong>Write engineering notes</strong><small>CSE · Mechanical · Robotics ↗</small></a>
+  <a class="quick-card" href="{{ url_for('scores') }}"><span>↗</span><strong>Record a quiz score</strong><small>See your performance ↗</small></a>
+</div>
+{% endblock %}

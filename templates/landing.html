@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Locked In — Study like you mean it{% endblock %}
+{% block content %}
+<section class="hero landing-hero">
+  <div class="eyebrow"><span class="brand-dot"></span> YOUR PERSONAL STUDENT OS</div>
+  <h1>Study like<br>you <span class="highlight">mean it.</span></h1>
+  <p class="hero-copy">A workspace for your tasks, question papers, engineering notes, internships, study hours, and progress. Made for students who want to get things done.</p>
+  <div class="landing-actions">
+    <a class="btn btn-lime" href="{{ url_for('register') }}">Create your workspace ↗</a>
+    <a class="btn btn-ghost" href="{{ url_for('login') }}">Log in</a>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card"><span class="feature-icon purple">▦</span><h3>Task board</h3><p>Track To Do, In Progress, Completed, and Incomplete work.</p></div>
+    <div class="feature-card"><span class="feature-icon lime">▤</span><h3>Student library</h3><p>Keep papers, PDFs, links, and useful resources organized.</p></div>
+    <div class="feature-card"><span class="feature-icon orange">◷</span><h3>Focus & scores</h3><p>Record study sessions, quiz scores, and screen time.</p></div>
+  </div>
+</section>
+{% endblock %}

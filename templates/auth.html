@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Create account' if mode == 'register' else 'Log in' }} — Locked In{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="auth-intro">
+    <div class="eyebrow">YOUR OWN SPACE · YOUR OWN PROGRESS</div>
+    <h1>{{ 'Make it yours.' if mode == 'register' else 'Welcome back.' }}</h1>
+    <p class="hero-copy">{{ 'Create a private workspace for your student life.' if mode == 'register' else 'Pick up where you left off.' }}</p>
+  </div>
+  <form class="panel auth-panel" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if mode == 'register' %}
+      <label>USERNAME<input name="username" minlength="3" maxlength="40" required autocomplete="username" placeholder="e.g. karthik"></label>
+      <label>EMAIL<input type="email" name="email" maxlength="254" required autocomplete="email" placeholder="you@example.com"></label>
+      <label>PASSWORD <span class="muted">(12+ CHARACTERS)</span><input type="password" name="password" minlength="12" required autocomplete="new-password" placeholder="Use a long, unique password"></label>
+      <label>CONFIRM PASSWORD<input type="password" name="confirm_password" minlength="12" required autocomplete="new-password" placeholder="Enter it again"></label>
+      <button class="btn btn-purple btn-wide" type="submit">Create account ↗</button>
+      <p class="form-foot">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    {% else %}
+      <label>USERNAME OR EMAIL<input name="identity" required autocomplete="username" placeholder="Your username or email"></label>
+      <label>PASSWORD<input type="password" name="password" required autocomplete="current-password" placeholder="Your password"></label>
+      <label class="check-label"><input type="checkbox" name="remember"> Remember me on this device</label>
+      <button class="btn btn-purple btn-wide" type="submit">Log in ↗</button>
+      <p class="form-foot">New here? <a href="{{ url_for('register') }}">Create an account</a></p>
+    {% endif %}
+  </form>
+  <p class="muted small security-note">Passwords are stored as hashes. Keep your password private and use a unique one.</p>
+</section>
+{% endblock %}
