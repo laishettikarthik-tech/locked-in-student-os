@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Locked In — Student OS
 
 A local-first student productivity web app built with Flask, SQLite, HTML, CSS, and JavaScript.
@@ -48,3 +49,6 @@ A local-first student productivity web app built with Flask, SQLite, HTML, CSS, 
 - Screen-time logging is manual in this version. A normal web app cannot automatically read Instagram/Snapchat usage from your device without a supported OS integration and permissions.
 - This is a student-project starter, not a fully audited production service. Before exposing it to the public internet, configure HTTPS, a persistent secret key, secure cookies (`COOKIE_SECURE=1` behind HTTPS), backups, rate limiting, email verification/password reset, and production hosting. Do not use Flask's development server for public production deployment.
 - Never commit `student_os.db`, real uploaded files, secrets, or your `.venv` folder to GitHub.
+=======
+# locked-in-student-os
+>>>>>>> 2d2f9f8bd8df6b84235a47acec35788af889ad46
